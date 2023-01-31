@@ -1,0 +1,23 @@
+{
+  "name"       : "bootstrap-form-wizard",
+  "version"    : "1.0.0 beta",
+  "description": "Formulario wizard con bootstrap 5",
+  "main"       : "dist/js/bootstrap-form-wizard.js",
+  "scripts"    : {
+    "buildjs"     : "npx rollup --config rollup.config.js",
+    "watchbuildjs": "npx rollup --config rollup.config.js --watch"
+  },
+  "author"      : "Nixon Patiño <xoni.patino@outlook.com>",
+  "license"     : "ISC",
+  "dependencies": {
+    "bootstrap": "^5.2.3"
+  },
+  "devDependencies": {
+    "@rollup/plugin-terser"    : "^0.3.0",
+    "@types/bootstrap"         : "^5.2.6",
+    "@types/node"              : "^18.11.18",
+    "rollup"                   : "^3.10.0",
+    "rollup-plugin-typescript2": "^0.34.1",
+    "tslib"                    : "^2.4.1"
+  }
+}
