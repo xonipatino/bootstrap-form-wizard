@@ -1,6 +1,6 @@
 {
-  "name"       : "bootstrap-form-wizard",
-  "version"    : "1.0.0 beta",
+  "name"       : "@xonipatino/bootstrap-form-wizard",
+  "version"    : "1.0.0",
   "description": "Formulario wizard con bootstrap 5",
   "main"       : "dist/js/bootstrap-form-wizard.js",
   "scripts"    : {
@@ -19,5 +19,9 @@
     "rollup"                   : "^3.10.0",
     "rollup-plugin-typescript2": "^0.34.1",
     "tslib"                    : "^2.4.1"
+  },
+  "repository": "git@github.com:xonipatino/bootstrap-form-wizard.git",
+  "publishConfig": {
+    "access": "public"
   }
 }
