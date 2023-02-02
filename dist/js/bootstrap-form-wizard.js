@@ -33,11 +33,10 @@
      * Bootstrap Form Wizard
      * @requires
      * @author Nixon Fabian Patiño Pacheco <xoni.patino@outlook.com>.
-     * @version 1.0.0.
+     * @version 1.0.1.
      *
      * @summary
      * - Falta agregar el codigo para validacion con bootstrap.
-     * - Falta poner el atributo step como solo lectura, a traves de la function Object.defineProperty()
      */
     class BootstrapFormWizard {
         static instances = [];
@@ -47,7 +46,7 @@
         elementWrapper;
         options;
         step;
-        stepList;
+        stepNavList;
         stepPanelList;
         constructor(_dom, _opts = {}) {
             // --
@@ -60,10 +59,12 @@
                 throw new Error('The wrapper element is invalid.');
             this.element.id = (this.element.id) ? this.element.id : this.id;
             // --
-            this.options = Object.assign({}, defaultOptions, {
-                backBtn: this.elementWrapper.querySelector('button[data-bfw-action="back"]'),
-                nextBtn: this.elementWrapper.querySelector('button[data-bfw-action="next"]'),
-            }, _opts);
+            this.options = Object.assign({}, defaultOptions, _opts);
+            // --
+            if (!this.options.backBtn)
+                this.options.backBtn = this.elementWrapper.querySelector('button[data-bfw-action="back"]');
+            if (!this.options.nextBtn)
+                this.options.nextBtn = this.elementWrapper.querySelector('button[data-bfw-action="next"]');
             if ((!this.options.backBtn) || (this.options.backBtn.tagName.toLowerCase() != 'button') ||
                 (!this.options.nextBtn) || (this.options.nextBtn.tagName.toLowerCase() != 'button'))
                 throw new Error('The selector of the back or next button is invalid.');
@@ -91,6 +92,12 @@
             this.goTo(this.options.start);
             // --
             BootstrapFormWizard.instances.push(this);
+        }
+        // --
+        static forElement(_dom) {
+            if (typeof _dom == 'string')
+                _dom = document.querySelector(_dom);
+            return (_dom) ? BootstrapFormWizard.instances.find(formElem => (formElem.element == _dom)) : undefined;
         }
         // --
         checkValidityForm() {
@@ -130,6 +137,14 @@
             return isValid;
         }
         // --
+        getCurrentStep() {
+            return {
+                step: this.step,
+                stepNav: this.stepNavList[this.step - 1],
+                stepPanel: this.stepPanelList[this.step - 1],
+            };
+        }
+        // --
         reportValidityForm() {
             if (this.options.useBootstrapValidation) ;
             else {
@@ -159,12 +174,12 @@
         }
         // --
         loadListSteps() {
-            this.stepList = this.elementWrapper.querySelectorAll('[data-bs-toggle="step"]');
-            if (this.stepList.length == 0)
+            this.stepNavList = this.elementWrapper.querySelectorAll('[data-bs-toggle="step"]');
+            if (this.stepNavList.length == 0)
                 throw new Error('No step elements were found in the list.');
             else {
                 let arrSelectors = [];
-                this.stepList.forEach((stepElem, index) => {
+                this.stepNavList.forEach((stepElem, index) => {
                     let stepPanelSelector = (stepElem.dataset.bsTarget) ? stepElem.dataset.bsTarget : stepElem.getAttribute('href'), stepPanelElem = this.elementWrapper.querySelector(stepPanelSelector), stepNum = (index + 1).toString();
                     if (stepPanelElem) {
                         stepPanelElem.role = 'steppanel';
@@ -175,13 +190,13 @@
                         throw new Error('The step panel for one of the steps in the list was not found.');
                     stepElem.setAttribute('step', stepNum);
                     stepElem.addEventListener('shown.bs.tab', event => {
-                        let currentStepElem = event.target, indexCurrentStep = Array.from(this.stepList).indexOf(currentStepElem);
+                        let currentStepElem = event.target, indexCurrentStep = Array.from(this.stepNavList).indexOf(currentStepElem);
                         this.step = indexCurrentStep + 1;
                         if (this.step == 1)
                             this.options.backBtn.setAttribute('disabled', '');
                         else
                             this.options.backBtn.removeAttribute('disabled');
-                        this.options.nextBtn.innerHTML = (this.step == this.stepList.length) ? this.options.lang.nextBtnSubmit : this.options.lang.nextBtn;
+                        this.options.nextBtn.innerHTML = (this.step == this.stepNavList.length) ? this.options.lang.nextBtnSubmit : this.options.lang.nextBtn;
                         this.options.nextBtn.type = 'button';
                     });
                 });
@@ -194,7 +209,7 @@
         }
         // --
         goTo(_step) {
-            let stepElem = this.stepList.item(_step - 1);
+            let stepElem = this.stepNavList.item(_step - 1);
             if (stepElem) {
                 bootstrap.Tab.getOrCreateInstance(stepElem).show();
                 if (!this.step) {
@@ -203,7 +218,7 @@
                         this.options.backBtn.setAttribute('disabled', '');
                     else
                         this.options.backBtn.removeAttribute('disabled');
-                    this.options.nextBtn.innerHTML = (this.step == this.stepList.length) ? this.options.lang.nextBtnSubmit : this.options.lang.nextBtn;
+                    this.options.nextBtn.innerHTML = (this.step == this.stepNavList.length) ? this.options.lang.nextBtnSubmit : this.options.lang.nextBtn;
                     this.options.nextBtn.type = 'button';
                 }
             }
@@ -212,7 +227,7 @@
         }
         // --
         back() {
-            if (this.stepList.item(this.step - 1)) {
+            if (this.stepNavList.item(this.step - 1)) {
                 this.goTo(this.step - 1);
                 if (typeof this.options.onBack == 'function')
                     this.options.onBack(this.step);
@@ -222,8 +237,12 @@
         next() {
             if (!this.checkValidityForm())
                 this.reportValidityForm();
-            else if (this.step == this.stepList.length) {
-                this.options.nextBtn.type = 'submit';
+            else if (this.step == this.stepNavList.length) {
+                if (this.options.nextBtn.form == this.element)
+                    this.options.nextBtn.type = 'submit';
+                else
+                    this.options.nextBtn.type = 'submit';
+                this.options.nextBtn.setAttribute('form', this.element.id);
                 this.element.requestSubmit(this.options.nextBtn);
             }
             else {

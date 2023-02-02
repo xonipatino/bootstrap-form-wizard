@@ -2,11 +2,10 @@
  * Bootstrap Form Wizard
  * @requires
  * @author Nixon Fabian Patiño Pacheco <xoni.patino@outlook.com>.
- * @version 1.0.0.
+ * @version 1.0.1.
  *
  * @summary
  * - Falta agregar el codigo para validacion con bootstrap.
- * - Falta poner el atributo step como solo lectura, a traves de la function Object.defineProperty()
  */
 import defaultOptions from './DefaultOptions';
 export default class BootstrapFormWizard {
@@ -17,11 +16,13 @@ export default class BootstrapFormWizard {
     elementWrapper: Element;
     options: typeof defaultOptions;
     step: number;
-    stepList: NodeListOf<HTMLElement>;
+    stepNavList: NodeListOf<HTMLElement>;
     stepPanelList: NodeListOf<HTMLElement>;
     constructor(_dom: HTMLFormElement | string, _opts?: object);
-    private checkValidityForm;
-    private reportValidityForm;
+    static forElement(_dom: HTMLFormElement | string): BootstrapFormWizard | undefined;
+    checkValidityForm(): boolean;
+    getCurrentStep(): Object;
+    reportValidityForm(): void;
     loadListSteps(): void;
     reset(): void;
     goTo(_step: number): void;
