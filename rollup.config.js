@@ -38,7 +38,7 @@ module.exports = {
     plugins: [
         typescript({
             tsconfig: './tsconfig.json',
-            useTsconfigDeclarationDir: true,
+            //useTsconfigDeclarationDir: true,
         })
     ]
 }
