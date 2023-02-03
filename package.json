@@ -12,7 +12,6 @@
   "author": "Nixon Patiño <xoni.patino@outlook.com>",
   "license": "ISC",
   "dependencies": {
-    "@rollup/plugin-typescript": "^11.0.0",
     "bootstrap": "^5.2.3"
   },
   "devDependencies": {
