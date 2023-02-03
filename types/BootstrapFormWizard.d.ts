@@ -1,20 +1,20 @@
 /**
  * Bootstrap Form Wizard
- * @requires
+ * @requires Bootstrap
  * @author Nixon Fabian Patiño Pacheco <xoni.patino@outlook.com>.
  * @version 1.0.1.
  *
  * @summary
  * - Falta agregar el codigo para validacion con bootstrap.
  */
-import defaultOptions from './DefaultOptions';
-export default class BootstrapFormWizard {
+import ops from './Options';
+declare class BootstrapFormWizard {
     static instances: Array<BootstrapFormWizard>;
-    static defaultOptions: typeof defaultOptions;
+    static defaultOptions: ops;
     readonly id: string;
     element: HTMLFormElement;
     elementWrapper: Element;
-    options: typeof defaultOptions;
+    options: ops;
     step: number;
     stepNavList: NodeListOf<HTMLElement>;
     stepPanelList: NodeListOf<HTMLElement>;
@@ -29,3 +29,4 @@ export default class BootstrapFormWizard {
     back(): void;
     next(): void;
 }
+export default BootstrapFormWizard;
