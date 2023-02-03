@@ -1,4 +1,4 @@
-# bootstrap-form-wizard
+# Bootstrap Form Wizard
 Formulario wizard con bootstrap 5
 
 ## v1.0.1
